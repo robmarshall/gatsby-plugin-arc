@@ -1,6 +1,15 @@
-import React from "react";
-import minimatch from "minimatch";
-export const onRenderBody = ({
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+exports.__esModule = true;
+exports.onRenderBody = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _minimatch = _interopRequireDefault(require("minimatch"));
+
+const onRenderBody = ({
   pathname,
   setHeadComponents,
   setPostBodyComponents
@@ -22,8 +31,18 @@ export const onRenderBody = ({
   }
 
   const setComponents = pluginOptions.head ? setHeadComponents : setPostBodyComponents;
-  return setComponents([""]);
+  return setComponents([_react.default.createElement(_react.default.Fragment, {
+    key: `gatsby-plugin-arc`
+  }, _react.default.createElement("script", {
+    async: true,
+    src: `https://arc.io/widget.js#${widgetId}?CDN=${checkPathAgainstOptions({
+      pathName: pathName,
+      options: disableCDN
+    })}`
+  }))]);
 };
+
+exports.onRenderBody = onRenderBody;
 
 const runOnEnvs = ({
   env,
@@ -44,7 +63,7 @@ const checkPathAgainstOptions = ({
 }) => {
   if (options !== `undefined`) {
     if (Array.isArray(options)) {
-      return minimatch(pathName, options);
+      return (0, _minimatch.default)(pathName, options);
     }
 
     if (typeof options === `boolean`) {

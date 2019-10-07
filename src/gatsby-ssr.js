@@ -24,14 +24,17 @@ export const onRenderBody = (
     : setPostBodyComponents;
 
   return setComponents([
-    <script
-      async
-      key={`gatsby-plugin-arc`}
-      src={`https://arc.io/widget.js#${widgetId}?CDN=${checkPathAgainstOptions({
-        pathName: pathName,
-        options: disableCDN
-      })}`}
-    />
+    <React.Fragment key={`gatsby-plugin-arc`}>
+      <script
+        async
+        src={`https://arc.io/widget.js#${widgetId}?CDN=${checkPathAgainstOptions(
+          {
+            pathName: pathName,
+            options: disableCDN
+          }
+        )}`}
+      />
+    </React.Fragment>
   ]);
 };
 

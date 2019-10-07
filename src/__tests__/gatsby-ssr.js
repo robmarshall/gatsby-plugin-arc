@@ -1,3 +1,5 @@
+import React from "react";
+import renderer from "react-test-renderer";
 import { onRenderBody } from "../gatsby-ssr";
 
 describe(`gatsby-plugin-arc`, () => {
