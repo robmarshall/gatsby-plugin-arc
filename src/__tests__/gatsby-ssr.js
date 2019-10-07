@@ -17,19 +17,19 @@ describe(`gatsby-plugin-arc`, () => {
       });
 
       const setup = options => {
-        const pathname = "/pathexample";
+        const pathName = "/path";
         const setHeadComponents = jest.fn();
         const setPostBodyComponents = jest.fn();
 
         options = Object.assign({}, options);
 
         onRenderBody(
-          { pathname, setHeadComponents, setPostBodyComponents },
+          { pathName, setHeadComponents, setPostBodyComponents },
           options
         );
 
         return {
-          pathname,
+          pathName,
           setHeadComponents,
           setPostBodyComponents
         };
@@ -37,71 +37,42 @@ describe(`gatsby-plugin-arc`, () => {
 
       // widgetId, disable, env, phrase, assert
       const cases = [
-        ["", "false", ["staging"], "not", "not.toHaveBeenCalled"],
-        ["", "false", ["production"], "not", "not.toHaveBeenCalled"],
-        ["", "true", ["staging"], "not", "not.toHaveBeenCalled"],
-        ["", "true", ["production"], "not", "not.toHaveBeenCalled"],
-        ["", ["/pathexample"], ["staging"], "not", "not.toHaveBeenCalled"],
-        ["", ["/pathexample"], ["production"], "not", "not.toHaveBeenCalled"],
-        ["", ["/notallowed"], ["staging"], "not", "not.toHaveBeenCalled"],
-        ["", ["/notallowed"], ["production"], "not", "not.toHaveBeenCalled"],
-        ["id", "false", ["staging"], "not", "not.toHaveBeenCalled"],
-        ["id", "false", ["production"], "", "toHaveBeenCalled"],
-        ["id", "true", ["staging"], "not", "not.toHaveBeenCalled"],
-        ["id", "true", ["production"], "not", "not.toHaveBeenCalled"],
-        ["id", ["/pathexample"], ["staging"], "not", "not.toHaveBeenCalled"],
-        ["id", ["/pathexample"], ["production"], "", "toHaveBeenCalled"],
-        ["id", ["/notallowed"], ["staging"], "not", "not.toHaveBeenCalled"],
-        ["id", ["/notallowed"], ["production"], "not", "not.toHaveBeenCalled"]
+        [1, null, false, ["staging"], " not", "not.toHaveBeenCalled"],
+        [2, null, false, ["production"], " not", "not.toHaveBeenCalled"],
+        [3, null, true, ["staging"], " not", "not.toHaveBeenCalled"],
+        [4, null, true, ["production"], " not", "not.toHaveBeenCalled"],
+        [5, null, ["/path"], ["staging"], "not", "not.toHaveBeenCalled"],
+        [6, null, ["/path"], ["production"], " not", "not.toHaveBeenCalled"],
+        [7, null, ["/stop"], ["staging"], " not", "not.toHaveBeenCalled"],
+        [8, null, ["/stop"], ["production"], " not", "not.toHaveBeenCalled"],
+        [9, "id", false, ["staging"], " not", "not.toHaveBeenCalled"],
+        [10, "id", false, ["production"], "", "toHaveBeenCalled"],
+        [11, "id", true, ["staging"], " not", "not.toHaveBeenCalled"],
+        [12, "id", true, ["production"], " not", "not.toHaveBeenCalled"],
+        [13, "id", ["/path"], ["staging"], " not", "not.toHaveBeenCalled"],
+        [14, "id", ["/path"], ["production"], "", "toHaveBeenCalled(1)"],
+        [15, "id", ["/stop"], ["staging"], " not", "not.toHaveBeenCalled"],
+        [16, "id", ["/stop"], ["production"], " not", "not.toHaveBeenCalled"]
       ];
 
       describe(`all essential loading option cases`, () => {
         test.each(cases)(
-          `Using id: %s, disable: %s, and env: %s the script should%s be set`,
-          (id, disable, env, note, assert)
+          `%p: Using id: %s, disable: %s, and env: %s the script should%s be set`,
+          (count, id, disable, env, note, assert) => {
+            const {
+              pathName,
+              setHeadComponents,
+              setPostBodyComponents
+            } = setup({
+              widgetId: id,
+              disable: disable,
+              env: env
+            });
+
+            expect(setHeadComponents)[assert];
+          }
         );
-
-        const { pathname, setHeadComponents, setPostBodyComponents } = setup({
-          widgetId: id,
-          disable: disable,
-          env: env
-        });
-
-        expect(setHeadComponents)[assert];
       });
-
-      // describe(`if env enabled`, () => {
-      //
-      //   it(`sets tracking script in head`, () => {
-      //     const { setHeadComponents, setPostBodyComponents } = setup({
-      //       head: true,
-      //     })
-      //
-      //     expect(setHeadComponents).toHaveBeenCalledTimes(2)
-      //     expect(setPostBodyComponents).not.toHaveBeenCalled()
-      //   })
-      //
-      //   it(`sets trackingId`, () => {
-      //     const { setPostBodyComponents } = setup({
-      //       trackingId: `TEST_TRACKING_ID`,
-      //     })
-      //
-      //     const result = JSON.stringify(setPostBodyComponents.mock.calls[0][0])
-      //
-      //     expect(result).toMatch(/TEST_TRACKING_ID/)
-      //   })
-      //
-      //   it(`sets excluded paths`, () => {
-      //     const { setPostBodyComponents } = setup({
-      //       exclude: [`/some-path`],
-      //     })
-      //
-      //     const result = JSON.stringify(setPostBodyComponents.mock.calls[0][0])
-      //
-      //     expect(result).toMatch(/excludeGAPaths/)
-      //   })
-      //
-      // })
     });
   });
 });

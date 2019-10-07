@@ -2,7 +2,7 @@ import React from "react";
 import minimatch from "minimatch";
 
 export const onRenderBody = (
-  { pathname, setHeadComponents, setPostBodyComponents },
+  { pathName, setHeadComponents, setPostBodyComponents },
   {
     widgetId,
     head = true,
@@ -14,14 +14,12 @@ export const onRenderBody = (
   if (
     !widgetId ||
     !runOnEnvs({ env: env, nodeEnv: process.env.NODE_ENV }) ||
-    checkPathAgainstOptions({ pathName: pathName, options: disable })
+    !checkPathAgainstOptions({ pathName: pathName, options: disable })
   ) {
     return null;
   }
 
-  const setComponents = pluginOptions.head
-    ? setHeadComponents
-    : setPostBodyComponents;
+  const setComponents = head ? setHeadComponents : setPostBodyComponents;
 
   return setComponents([
     <React.Fragment key={`gatsby-plugin-arc`}>
@@ -50,7 +48,12 @@ const runOnEnvs = ({ env, nodeEnv }) => {
 const checkPathAgainstOptions = ({ pathName, options }) => {
   if (options !== `undefined`) {
     if (Array.isArray(options)) {
-      return minimatch(pathName, options);
+      options.forEach(option => {
+        if (minimatch(pathName, option)) {
+          console.log(pathName, option);
+          return true;
+        }
+      });
     }
 
     if (typeof options === `boolean`) {

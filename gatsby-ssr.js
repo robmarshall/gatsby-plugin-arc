@@ -10,7 +10,7 @@ var _react = _interopRequireDefault(require("react"));
 var _minimatch = _interopRequireDefault(require("minimatch"));
 
 const onRenderBody = ({
-  pathname,
+  pathName,
   setHeadComponents,
   setPostBodyComponents
 }, {
@@ -30,7 +30,7 @@ const onRenderBody = ({
     return null;
   }
 
-  const setComponents = pluginOptions.head ? setHeadComponents : setPostBodyComponents;
+  const setComponents = head ? setHeadComponents : setPostBodyComponents;
   return setComponents([_react.default.createElement(_react.default.Fragment, {
     key: `gatsby-plugin-arc`
   }, _react.default.createElement("script", {
@@ -63,7 +63,13 @@ const checkPathAgainstOptions = ({
 }) => {
   if (options !== `undefined`) {
     if (Array.isArray(options)) {
-      return (0, _minimatch.default)(pathName, options);
+      options.forEach(option => {
+        console.log(pathName, option);
+
+        if ((0, _minimatch.default)(pathName, option)) {
+          return true;
+        }
+      });
     }
 
     if (typeof options === `boolean`) {
