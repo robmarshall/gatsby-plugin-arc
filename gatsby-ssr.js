@@ -23,7 +23,7 @@ const onRenderBody = ({
   if (!widgetId || !runOnEnvs({
     env: env,
     nodeEnv: process.env.NODE_ENV
-  }) || checkPathAgainstOptions({
+  }) || !checkPathAgainstOptions({
     pathName: pathName,
     options: disable
   })) {
@@ -64,9 +64,8 @@ const checkPathAgainstOptions = ({
   if (options !== `undefined`) {
     if (Array.isArray(options)) {
       options.forEach(option => {
-        console.log(pathName, option);
-
         if ((0, _minimatch.default)(pathName, option)) {
+          console.log(pathName, option);
           return true;
         }
       });
